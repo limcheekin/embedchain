@@ -3,6 +3,12 @@
 [![](https://dcbadge.vercel.app/api/server/nhvCbCtKV?style=flat)](https://discord.gg/nhvCbCtKV)
 ![PyPI](https://img.shields.io/pypi/v/embedchain)
 
+> This is the fork of Embedchain to run with OpenAI API compatible [llama-cpp-python Web Server](https://github.com/abetlen/llama-cpp-python#web-server). Hence, you can run the Embedchain with any LLMs supported by `llama-cpp-python` package.
+
+> The notebook `embedchain.ipynb` is created to quick test the integrations is working fine. It is tested with [orca-mini-7b.ggmlv3.q4_0](https://huggingface.co/TheBloke/orca_mini_7B-GGML/blob/main/orca-mini-7b.ggmlv3.q4_0.bin).
+
+> Use of `HuggingFaceEmbeddings(model_name="intfloat/e5-large-v2")` instead of `OpenAIEmbeddings` as the embedding endpoint of the llama-cpp-python Web Server is too slow and using too much compute resources to be usable. Hence, you need to install additional dependency, the `sentence_transformers` package in order to run the notebook successfully.
+
 embedchain is a framework to easily create LLM powered bots over any dataset.
 
 It abstracts the entire process of loading a dataset, chunking it, creating embeddings and then storing in a vector database.
@@ -42,16 +48,16 @@ pip install embedchain
 
 ## Usage
 
-* We use OpenAI's embedding model to create embeddings for chunks and ChatGPT API as LLM to get answer given the relevant docs. Make sure that you have an OpenAI account and an API key. If you have dont have an API key, you can create one by visiting [this link](https://platform.openai.com/account/api-keys).
+- We use OpenAI's embedding model to create embeddings for chunks and ChatGPT API as LLM to get answer given the relevant docs. Make sure that you have an OpenAI account and an API key. If you have dont have an API key, you can create one by visiting [this link](https://platform.openai.com/account/api-keys).
 
-* Once you have the API key, set it in an environment variable called `OPENAI_API_KEY`
+- Once you have the API key, set it in an environment variable called `OPENAI_API_KEY`
 
 ```python
 import os
 os.environ["OPENAI_API_KEY"] = "sk-xxxx"
 ```
 
-* Next import the `App` class from embedchain and use `.add` function to add any dataset.
+- Next import the `App` class from embedchain and use `.add` function to add any dataset.
 
 ```python
 
@@ -69,7 +75,7 @@ naval_chat_bot.add("web_page", "https://nav.al/agi")
 naval_chat_bot.add_local("qna_pair", ("Who is Naval Ravikant?", "Naval Ravikant is an Indian-American entrepreneur and investor."))
 ```
 
-* If there is any other app instance in your script or app, you can change the import as
+- If there is any other app instance in your script or app, you can change the import as
 
 ```python
 from embedchain import App as EmbedChainApp
@@ -79,7 +85,7 @@ from embedchain import App as EmbedChainApp
 from embedchain import App as ECApp
 ```
 
-* Now your app is created. You can use `.query` function to get the answer for any query.
+- Now your app is created. You can use `.query` function to get the answer for any query.
 
 ```python
 print(naval_chat_bot.query("What unique capacity does Naval argue humans possess when it comes to understanding explanations or concepts?"))
@@ -123,6 +129,7 @@ To supply your own text, use the data_type as `text` and enter a string. The tex
 ```python
 app.add_local('text', 'Seek wealth, not money or status. Wealth is having assets that earn while you sleep. Money is how we transfer time and wealth. Status is your place in the social hierarchy.')
 ```
+
 Note: This is not used in the examples because in most cases you will supply a whole paragraph or file, which did not fit.
 
 ### QnA Pair
@@ -135,30 +142,30 @@ app.add_local('qna_pair', ("Question", "Answer"))
 
 ### More Formats coming soon
 
-* If you want to add any other format, please create an [issue](https://github.com/embedchain/embedchain/issues) and we will add it to the list of supported formats.
+- If you want to add any other format, please create an [issue](https://github.com/embedchain/embedchain/issues) and we will add it to the list of supported formats.
 
 # How does it work?
 
 Creating a chat bot over any dataset needs the following steps to happen
 
-* load the data
-* create meaningful chunks
-* create embeddigns for each chunk
-* store the chunks in vector database
+- load the data
+- create meaningful chunks
+- create embeddigns for each chunk
+- store the chunks in vector database
 
 Whenever a user asks any query, following process happens to find the answer for the query
 
-* create the embedding for query
-* find similar documents for this query from vector database
-* pass similar documents as context to LLM to get the final answer.
+- create the embedding for query
+- find similar documents for this query from vector database
+- pass similar documents as context to LLM to get the final answer.
 
 The process of loading the dataset and then querying involves multiple steps and each steps has nuances of it is own.
 
-* How should I chunk the data? What is a meaningful chunk size?
-* How should I create embeddings for each chunk? Which embedding model should I use?
-* How should I store the chunks in vector database? Which vector database should I use?
-* Should I store meta data along with the embeddings?
-* How should I find similar documents for a query? Which ranking model should I use?
+- How should I chunk the data? What is a meaningful chunk size?
+- How should I create embeddings for each chunk? Which embedding model should I use?
+- How should I store the chunks in vector database? Which vector database should I use?
+- Should I store meta data along with the embeddings?
+- How should I find similar documents for a query? Which ranking model should I use?
 
 These questions may be trivial for some but for a lot of us, it needs research, experimentation and time to find out the accurate answers.
 
@@ -177,4 +184,4 @@ embedchain is built on the following stack:
 
 # Author
 
-* Taranjeet Singh ([@taranjeetio](https://twitter.com/taranjeetio))
+- Taranjeet Singh ([@taranjeetio](https://twitter.com/taranjeetio))

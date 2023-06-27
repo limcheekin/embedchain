@@ -3,7 +3,6 @@ import os
 
 from dotenv import load_dotenv
 from langchain.docstore.document import Document
-from langchain.embeddings.openai import OpenAIEmbeddings
 
 from embedchain.loaders.youtube_video import YoutubeVideoLoader
 from embedchain.loaders.pdf_file import PdfFileLoader
@@ -18,8 +17,6 @@ from embedchain.chunkers.text import TextChunker
 from embedchain.vectordb.chroma_db import ChromaDB
 
 load_dotenv()
-
-embeddings = OpenAIEmbeddings()
 
 ABS_PATH = os.getcwd()
 DB_DIR = os.path.join(ABS_PATH, "db")
@@ -127,8 +124,10 @@ class EmbedChain:
         existing_ids = set(existing_docs["ids"])
 
         if len(existing_ids):
-            data_dict = {id: (doc, meta) for id, doc, meta in zip(ids, documents, metadatas)}
-            data_dict = {id: value for id, value in data_dict.items() if id not in existing_ids}
+            data_dict = {id: (doc, meta)
+                         for id, doc, meta in zip(ids, documents, metadatas)}
+            data_dict = {id: value for id,
+                         value in data_dict.items() if id not in existing_ids}
 
             if not data_dict:
                 print(f"All data from {url} already exists in the database.")
@@ -142,11 +141,13 @@ class EmbedChain:
             metadatas=metadatas,
             ids=ids
         )
-        print(f"Successfully saved {url}. Total chunks count: {self.collection.count()}")
+        print(
+            f"Successfully saved {url}. Total chunks count: {self.collection.count()}")
 
     def _format_result(self, results):
         return [
-            (Document(page_content=result[0], metadata=result[1] or {}), result[2])
+            (Document(page_content=result[0],
+             metadata=result[1] or {}), result[2])
             for result in zip(
                 results["documents"][0],
                 results["metadatas"][0],
@@ -167,7 +168,7 @@ class EmbedChain:
             top_p=1,
         )
         return response["choices"][0]["message"]["content"]
-    
+
     def retrieve_from_database(self, input_query):
         """
         Queries the vector database based on the given input query.
@@ -183,7 +184,7 @@ class EmbedChain:
         result_formatted = self._format_result(result)
         content = result_formatted[0][0].page_content
         return content
-    
+
     def generate_prompt(self, input_query, context):
         """
         Generates a prompt based on the given query and context, ready to be passed to an LLM
